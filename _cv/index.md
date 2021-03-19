@@ -11,7 +11,20 @@ permalink: /cv/
 ##### Website: [kozminski.co](http://kozminski.co)
 
 # Experience
-## February 2018 - Present | DMS
+
+## April 2020 - Currently | Cobalt.io
+### Role: Senior Staff Engineer
+
+#### Project: Cobalt Public API
+
+In Cobalt my daily work is designing and building public API. As security company my main goals is to design API and its architecture in way which makes it secure as well as extensible. Being staff engineer I collaborate across teams to help bring best engineering practices and help team members grow technically.
+
+- Technical leading for teams 
+- Designing public API 
+- Build architecture focused on security
+- Working with Kotlin & Ruby
+
+## February 2018 - March 2020 | DMS
 ### Role: Senior Staff Engineer
 
 #### Project: Mercedes Pay
