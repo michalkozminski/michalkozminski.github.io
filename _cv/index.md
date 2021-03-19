@@ -11,12 +11,26 @@ permalink: /cv/
 ##### Website: [kozminski.co](http://kozminski.co)
 
 # Experience
-## February 2018 - Present | DMS
+
+## April 2020 - Currently | Cobalt.io
+### Role: Senior Staff Engineer
+
+#### Project: Cobalt Public API
+
+In Cobalt my daily work is designing and building public API. As a security company, my main goal is to design API and its architecture in a way that makes it secure as well as extensible. To achieve a cross-service security system I designed an RBAC solution. Being a staff engineer I collaborate across teams to help bring best engineering practices and help team members grow technically. 
+
+- Technical leading for teams
+- Designing public API 
+- Build architecture focused on security
+- Working with Kotlin & Ruby
+- Design complex RBAC authorization system
+
+## February 2018 - March 2020 | DMS
 ### Role: Senior Staff Engineer
 
 #### Project: Mercedes Pay
 
-Mercedes pay is a payment solution from Daimler. My daily job is working in microservices architecture with multiple Scala, Java, Kotlin and JavaScript services. As the platform is designed primarily to handle payments there is a high priority of security and availability of the system.
+Mercedes pay is a payment solution deployed across Mercedes-Benz ecosystem. My daily job is working in microservices architecture with multiple Scala, Java, Kotlin and JavaScript services. As the platform is designed primarily to handle payments there is a high priority of security and availability of the system.
 
 - Working in distributed microservice architecture
 - Leading integration team
@@ -126,21 +140,3 @@ Home-eat-home was startup focused on delivering fresh food from vending machines
 - Speaking on react.berlin
 
 All presentations available at [my homepage](http://kozminski.co) 
-
-## Skills
-### Scala
-### Kotlin
-### Java
-### Javascript
-### Ruby
-### PostgreSQL
-### Python
-### Elixir
-### Erlang
-### AWS 
-### Docker
-### Kubernetes
-### DDD 
-### API Design
-### TDD
-### Microservices

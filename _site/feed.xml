@@ -1,4 +1,222 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://kozminski.co/feed.xml" rel="self" type="application/atom+xml" /><link href="http://kozminski.co/" rel="alternate" type="text/html" /><updated>2019-10-16T15:27:53+02:00</updated><id>http://kozminski.co/</id><title type="html">Random development notes</title><subtitle>Blog dedicated software engineering.</subtitle><entry><title type="html">Machine learning in education</title><link href="http://kozminski.co/javascsript/2017/11/11/ml.html" rel="alternate" type="text/html" title="Machine learning in education" /><published>2017-11-11T00:00:00+01:00</published><updated>2017-11-11T00:00:00+01:00</updated><id>http://kozminski.co/javascsript/2017/11/11/ml</id><content type="html" xml:base="http://kozminski.co/javascsript/2017/11/11/ml.html">&lt;h1 id=&quot;slides-and-video-from-js-kongress&quot;&gt;Slides and Video from JS Kongress&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://kozminski.co/feed.xml" rel="self" type="application/atom+xml" /><link href="http://kozminski.co/" rel="alternate" type="text/html" /><updated>2022-07-13T14:16:42-05:00</updated><id>http://kozminski.co/</id><title type="html">Random development notes</title><subtitle>Blog dedicated software engineering.</subtitle><entry><title type="html">Practical Advice on Good API Design</title><link href="http://kozminski.co/api/2021/11/14/good-api-design.html" rel="alternate" type="text/html" title="Practical Advice on Good API Design" /><published>2021-11-14T00:00:00-06:00</published><updated>2021-11-14T00:00:00-06:00</updated><id>http://kozminski.co/api/2021/11/14/good-api-design</id><content type="html" xml:base="http://kozminski.co/api/2021/11/14/good-api-design.html">&lt;p&gt;When designing a good API, always start with requirements. Before writing a single line of documentation, do as much research as possible about what your API should do. Think not only about the service side, but also who is going to be your consumer and what would be most important for them. I highly recommend creating a list of requirements as well as restrictions to give the end result a better shape.&lt;/p&gt;
+
+&lt;p&gt;Start by creating lists like security requirements, client requirements, maintenance requirements. Pull together your design based on these. For this, you can use tools like OpenAPI or API Blueprint.&lt;/p&gt;
+
+&lt;p&gt;In this article I summarize dos and don’ts for multiple areas of API creation: general best practices, security concerns, schema implementation, and headers usage. Let’s dive into it.&lt;/p&gt;
+
+&lt;h2 id=&quot;general-best-practices&quot;&gt;General Best Practices&lt;/h2&gt;
+
+&lt;h3 id=&quot;usefulness&quot;&gt;Usefulness&lt;/h3&gt;
+&lt;p&gt;The API should provide the desired functionality — something that users need or want — and not just exist for the sake of checking a box. This also means that you should have some understanding of what users are trying to accomplish and why, so you can make reasonable tradeoffs and design decisions.&lt;/p&gt;
+
+&lt;h3 id=&quot;favor-simplicity&quot;&gt;Favor simplicity&lt;/h3&gt;
+&lt;p&gt;There is frequently a tradeoff in APIs between “simple to understand/simple to use” and “powerful and flexible.” Unless there’s a good reason to do otherwise, you should favor simplicity in your APIs. This doesn’t mean that you won’t provide support for power users — that can be done by allowing overridable defaults or additional API endpoints.&lt;/p&gt;
+
+&lt;h3 id=&quot;principle-of-least-surprise&quot;&gt;Principle of Least Surprise&lt;/h3&gt;
+&lt;p&gt;Your APIs should avoid side effects, revealing odd implementation details, or changes in info representation.. For example, you don’t want your APIs to display data sometimes as floats, and sometimes as integers — there should be one format users can expect. Other labels such as amount, count, size, etc. should also stay consistent.&lt;/p&gt;
+
+&lt;h3 id=&quot;consistency&quot;&gt;Consistency&lt;/h3&gt;
+&lt;p&gt;Keep the structure of your APIs consistent. If you return wrapped objects, make sure you always return the same wrapper. Errors, Lists, Pagination, Single Resource, etc. should always have the same structure so they are easy to unpack. When naming keys, consistently name them across different endpoints. When designing a new API, create a list of requirements for this boilerplate so it might be used from day one.&lt;/p&gt;
+
+&lt;h3 id=&quot;separate-concerns&quot;&gt;Separate concerns&lt;/h3&gt;
+&lt;p&gt;Endpoints should do only one thing. Try to avoid endpoints that are doing more than one domain-specific atomic action.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Return Location header with the address to create a resource
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Don’t ❌&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Combine the responsibility of the GET and POST endpoints. POST shouldn't return a created object as its only responsibility is creation, not projection.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;security-points&quot;&gt;Security Points&lt;/h2&gt;
+&lt;h3 id=&quot;avoid-exposure-of-internal-ids&quot;&gt;Avoid exposure of internal IDs&lt;/h3&gt;
+&lt;p&gt;Create business IDs — for your API. IDs should be random to prevent potential guess attempts. Refer to OWASP’s cheat sheets on Insecure Direct Object Reference for more information.&lt;/p&gt;
+
+&lt;h3 id=&quot;define-clear-access-rules&quot;&gt;Define clear access rules&lt;/h3&gt;
+&lt;p&gt;When designing an API, clearly define what would be your authorization pattern. What roles exist and what resources they can access. Define your resources in OpenAPI and check if you’re not leaking anything as a nested resource to an unauthorized client.&lt;/p&gt;
+
+&lt;h3 id=&quot;automate-the-review-process&quot;&gt;Automate the review process&lt;/h3&gt;
+&lt;p&gt;If possible, automate security checks for the API. Use tools like OWASP Zap to find problems as early as possible.&lt;/p&gt;
+
+&lt;h3 id=&quot;use-owasp-guidelines-for-headers&quot;&gt;Use OWASP guidelines for headers&lt;/h3&gt;
+&lt;p&gt;Refer to OWASP’s Secure Header Project for more information.&lt;/p&gt;
+
+&lt;h3 id=&quot;include-abuse-cases-research-in-the-review-process&quot;&gt;Include abuse cases research in the review process&lt;/h3&gt;
+&lt;p&gt;Finding security concerns during design allows you to fix problems before they occur. Solving security problems on deployed APIs may lead to breaking changes which are expensive to implement. You can find more information here.&lt;/p&gt;
+
+&lt;h2 id=&quot;schema-implementation&quot;&gt;Schema Implementation&lt;/h2&gt;
+&lt;h3 id=&quot;pagination&quot;&gt;Pagination&lt;/h3&gt;
+&lt;p&gt;The main purpose of pagination is to let the consuming service know if there are more data points to fetch. Make it as easy to use for end customers without exposing details.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;data&quot;: [...]
+  &quot;pagination&quot;: {
+    &quot;previous&quot;: null,
+    &quot;next&quot;: &quot;/items?pagination=78ce5de5217340f7&quot;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;Customers are aware there are more data points&lt;/li&gt;
+  &lt;li&gt;Customers are aware they are at the beginning of the iteration&lt;/li&gt;
+  &lt;li&gt;It’s easy to jump to the next page&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Don’t ❌&lt;/p&gt;
+
+&lt;p&gt;Ask the customer to build a URL based on parameters.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;data&quot;: [...]
+  &quot;pagination&quot;: {
+    &quot;max_pages&quot;: 10,
+    &quot;current_page&quot;: 2,
+    &quot;current_limit&quot;: 10
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Which then user builds into:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/items?page=3&amp;amp;limit=10&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This could cause customers to skip some data as they change limits or to wrongly parse the current page. Caching might be harder to implement due to more unpredictable requests.&lt;/p&gt;
+
+&lt;h3 id=&quot;handling-nullability---single-value&quot;&gt;Handling nullability - single value&lt;/h3&gt;
+&lt;p&gt;Be consistent about nullability. The best practice is an explicit “null.” Avoid dropping keys or using empty strings or 0. This makes it easier for clients to parse responses.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;Example book&quot;,
+  &quot;score&quot;: null
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Don’t ❌&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;Example book&quot;,
+  &quot;score&quot;: 0
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;In the “don’t” example the client has to guess if there are no reviews or the book is really bad and deserves a score of 0.&lt;/p&gt;
+
+&lt;h3 id=&quot;handling-nullability---array&quot;&gt;Handling nullability - array&lt;/h3&gt;
+&lt;p&gt;Whenever returning a nested array inside an object, use an empty array over “null.”&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;Example book&quot;,
+  &quot;reviews&quot;: []
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Don’t ❌&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;Example book&quot;,
+  &quot;reviews&quot;: null
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;clear-versioning&quot;&gt;Clear versioning&lt;/h3&gt;
+&lt;p&gt;It should be easy for consumers to understand versioning and how the current version compares with previous iterations. Let’s work with the standard semantic versioning to explain my point. You have version 0.8.4, with 0 being major, 8 being minor, and 4 being patch.&lt;/p&gt;
+
+&lt;p&gt;When customers see a difference in major versioning, they usually expect a breaking change. With minor versioning, they look for new functionalities without breaking the contract. And with patches, it’s mostly small updates.&lt;/p&gt;
+
+&lt;p&gt;Here are some examples.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Breaking changes:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Delete any response field&lt;/li&gt;
+  &lt;li&gt;Rename any field&lt;/li&gt;
+  &lt;li&gt;Change in enums&lt;/li&gt;
+  &lt;li&gt;Add new mandatory request field&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;New endpoints:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A new method for existing endpoint eg. POST for existing GET endpoint&lt;/li&gt;
+  &lt;li&gt;New endpoint&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Extensions of existing endpoints:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add a new optional request field&lt;/li&gt;
+  &lt;li&gt;Add response field&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;extendability&quot;&gt;Extendability&lt;/h3&gt;
+&lt;p&gt;APIs should be extensible. That means whenever the API returns something, you should take into consideration it might need to return more information in the future.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;categories&quot;: [{ &quot;id&quot;: 1 }, { &quot;id&quot;: 2 }, { &quot;id&quot;: 3 }]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Don’t ❌&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;categories&quot;: [1, 2, 3]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;developer-friendly&quot;&gt;Developer friendly&lt;/h3&gt;
+&lt;p&gt;Think about APIs as something used by humans, not machines. Whenever something goes wrong, it will be a person evaluating this and you should make it as easy as possible for them.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;validation&quot;,
+    &quot;description&quot;: &quot;Id provided doesn't match pattern ... Please refer to documentation for more details about formatting&quot;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Don’t ❌&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;error&quot;: &quot;validation&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;idempotent&quot;&gt;Idempotent&lt;/h3&gt;
+&lt;p&gt;APIs should behave in an idempotent way. This means whenever you allow users to mutate data, multiple requests should not create different side effects. An example might be a CREATE request. Triggering 20 identical requests shouldn’t create 20 entities unless explicitly specified by the user. To prevent that, you could allow users to generate an ID or incorporate a Mutation-Check header to prevent the same requests. As a response, the API could return a 409 Conflict.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Example:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /books HTTP/1.1
+Mutation-Check: 4ab1030b-6020-4856-834b-7c4be91293a3
+
+Body: 
+{
+  &quot;name&quot;: &quot;Example book&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;This request should be allowed to pass only once. The next attempt to create an example book with the same Mutation-Check should fail.&lt;/p&gt;
+
+&lt;h3 id=&quot;headers-usage&quot;&gt;Headers usage&lt;/h3&gt;
+&lt;p&gt;Allow multiple projection layers
+APIs should be centered around concerns/domain, not the presentation layer. It might be that different clients require different projections (eg. server ↔︎ server and server ↔︎ mobile communication). I suggest using headers to distinguish which projection layer as well as version is required by the client.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Do ✔️&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Create multiple accept versions: &lt;code class=&quot;highlighter-rouge&quot;&gt;Accept: application/vnd.example.v1+json Accept: application/vnd.example.v2+json Accept: application/vnd.example.v1-ios+json&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Don’t ❌&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Push all edge cases into a generic API.&lt;/p&gt;
+
+&lt;h3 id=&quot;use-headers-to-provide-meaningful-context&quot;&gt;Use headers to provide meaningful context&lt;/h3&gt;
+&lt;p&gt;Headers could be used to store more information not related to content. E.g.&lt;/p&gt;
+
+&lt;p&gt;Location of the newly created resource
+Request limit
+Request ID (issue-resolving/tracking)&lt;/p&gt;
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+&lt;p&gt;Developing an API takes time. This post aims to give you a glimpse of some best practices for API design. It’s not exhaustive, but it should provide a good start to creating your own APIs that are intuitive and easy to use. What other guidelines do you think are important?&lt;/p&gt;
+
+&lt;p&gt;Note post cross-published: https://www.cobalt.io/blog/practical-advice-on-good-api-design&lt;/p&gt;</content><author><name></name></author><category term="API" /><category term="design" /><category term="rest" /><category term="http" /><summary type="html">When designing a good API, always start with requirements. Before writing a single line of documentation, do as much research as possible about what your API should do. Think not only about the service side, but also who is going to be your consumer and what would be most important for them. I highly recommend creating a list of requirements as well as restrictions to give the end result a better shape.</summary></entry><entry><title type="html">Machine learning in education</title><link href="http://kozminski.co/javascsript/2017/11/11/ml.html" rel="alternate" type="text/html" title="Machine learning in education" /><published>2017-11-11T00:00:00-06:00</published><updated>2017-11-11T00:00:00-06:00</updated><id>http://kozminski.co/javascsript/2017/11/11/ml</id><content type="html" xml:base="http://kozminski.co/javascsript/2017/11/11/ml.html">&lt;h1 id=&quot;slides-and-video-from-js-kongress&quot;&gt;Slides and Video from JS Kongress&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&quot;https://www.slideshare.net/secret/aWRUCLi5YP9llv&quot;&gt;Slides&lt;/a&gt; and (video)[https://www.youtube.com/watch?v=kkp2C1fir68]&lt;/p&gt;
 
 &lt;h1 id=&quot;how-to-use-it&quot;&gt;How to use it?&lt;/h1&gt;
@@ -68,8 +286,8 @@
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://unsupervisedmethods.com/over-150-of-the-best-machine-learning-nlp-and-python-tutorials-ive-found-ffce2939bd78&quot;&gt;Over 150 of the Best Machine Learning, NLP, and Python Tutorials I’ve Found&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/ZuzooVn/machine-learning-for-software-engineers&quot;&gt;Top-down learning path: Machine Learning for Software Engineers&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="javascript" /><category term="machine learning" /><category term="neural networks" /><summary type="html">Slides and Video from JS Kongress Slides and (video)[https://www.youtube.com/watch?v=kkp2C1fir68]</summary></entry><entry><title type="html">Ruby on Rails app to React.js + fluxxor migration</title><link href="http://kozminski.co/javascsript/2015/07/16/ror-to-react.html" rel="alternate" type="text/html" title="Ruby on Rails app to React.js + fluxxor migration" /><published>2015-07-16T00:00:00+02:00</published><updated>2015-07-16T00:00:00+02:00</updated><id>http://kozminski.co/javascsript/2015/07/16/ror-to-react</id><content type="html" xml:base="http://kozminski.co/javascsript/2015/07/16/ror-to-react.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
-&lt;p&gt;Link to presentation: &lt;a href=&quot;http://slides.com/michalkozminski-1/deck-1&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="react.js" /><category term="Ruby on Rails" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Image processing (part 1)</title><link href="http://kozminski.co/javascsript/2015/02/11/image-processing.html" rel="alternate" type="text/html" title="Image processing (part 1)" /><published>2015-02-11T00:00:00+01:00</published><updated>2015-02-11T00:00:00+01:00</updated><id>http://kozminski.co/javascsript/2015/02/11/image-processing</id><content type="html" xml:base="http://kozminski.co/javascsript/2015/02/11/image-processing.html">&lt;h1 id=&quot;image-processing&quot;&gt;Image processing&lt;/h1&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="javascript" /><category term="machine learning" /><category term="neural networks" /><summary type="html">Slides and Video from JS Kongress Slides and (video)[https://www.youtube.com/watch?v=kkp2C1fir68]</summary></entry><entry><title type="html">Ruby on Rails app to React.js + fluxxor migration</title><link href="http://kozminski.co/javascsript/2015/07/16/ror-to-react.html" rel="alternate" type="text/html" title="Ruby on Rails app to React.js + fluxxor migration" /><published>2015-07-16T00:00:00-05:00</published><updated>2015-07-16T00:00:00-05:00</updated><id>http://kozminski.co/javascsript/2015/07/16/ror-to-react</id><content type="html" xml:base="http://kozminski.co/javascsript/2015/07/16/ror-to-react.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
+&lt;p&gt;Link to presentation: &lt;a href=&quot;http://slides.com/michalkozminski-1/deck-1&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="react.js" /><category term="Ruby on Rails" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Image processing (part 1)</title><link href="http://kozminski.co/javascsript/2015/02/11/image-processing.html" rel="alternate" type="text/html" title="Image processing (part 1)" /><published>2015-02-11T00:00:00-06:00</published><updated>2015-02-11T00:00:00-06:00</updated><id>http://kozminski.co/javascsript/2015/02/11/image-processing</id><content type="html" xml:base="http://kozminski.co/javascsript/2015/02/11/image-processing.html">&lt;h1 id=&quot;image-processing&quot;&gt;Image processing&lt;/h1&gt;
 
 &lt;p&gt;Front-end applications often contain lot of images. Sometimes we want to process images e.g. when user uploads his avatar we want to give him basic photo editing tools. Processing image on backend would cause massive data transfer between browser and server. We moving more and more functionalities to browser side so we can do in this case. Using ready library is great solution but what about implementing our own solution from scratch? How hard could be making image brighter or adding B&amp;amp;W filter.&lt;/p&gt;
 
@@ -174,8 +392,8 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we can control contrast with it. Here is result of this action:&lt;/p&gt;
-&lt;en-media style=&quot;height: auto;&quot; type=&quot;image/png&quot; hash=&quot;d1065ae084b108782c68bf50c78b911c&quot; /&gt;</content><author><name></name></author><category term="javascript" /><category term="image processing" /><summary type="html">Image processing</summary></entry><entry><title type="html">mruby</title><link href="http://kozminski.co/javascsript/2015/02/11/mruby.html" rel="alternate" type="text/html" title="mruby" /><published>2015-02-11T00:00:00+01:00</published><updated>2015-02-11T00:00:00+01:00</updated><id>http://kozminski.co/javascsript/2015/02/11/mruby</id><content type="html" xml:base="http://kozminski.co/javascsript/2015/02/11/mruby.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
-&lt;p&gt;Link to presentation: &lt;a href=&quot;http://slides.com/michalkozminski/mruby&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="ruby" /><category term="mruby" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Grunt vs Gulp</title><link href="http://kozminski.co/javascsript/2014/12/20/grunt.html" rel="alternate" type="text/html" title="Grunt vs Gulp" /><published>2014-12-20T00:00:00+01:00</published><updated>2014-12-20T00:00:00+01:00</updated><id>http://kozminski.co/javascsript/2014/12/20/grunt</id><content type="html" xml:base="http://kozminski.co/javascsript/2014/12/20/grunt.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
-&lt;p&gt;Link to presentation: &lt;a href=&quot;/grunt_gulp&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="grunt" /><category term="gulp" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Marionette.js</title><link href="http://kozminski.co/javascsript/2014/11/04/marionette-js.html" rel="alternate" type="text/html" title="Marionette.js" /><published>2014-11-04T00:00:00+01:00</published><updated>2014-11-04T00:00:00+01:00</updated><id>http://kozminski.co/javascsript/2014/11/04/marionette-js</id><content type="html" xml:base="http://kozminski.co/javascsript/2014/11/04/marionette-js.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
-&lt;p&gt;Link to presentation: &lt;a href=&quot;/marionette/assets/player/KeynoteDHTMLPlayer.html&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="backbone.js" /><category term="marionette.js" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Asm.js</title><link href="http://kozminski.co/javascsript/2014/10/08/asm-js.html" rel="alternate" type="text/html" title="Asm.js" /><published>2014-10-08T00:00:00+02:00</published><updated>2014-10-08T00:00:00+02:00</updated><id>http://kozminski.co/javascsript/2014/10/08/asm-js</id><content type="html" xml:base="http://kozminski.co/javascsript/2014/10/08/asm-js.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
+&lt;en-media style=&quot;height: auto;&quot; type=&quot;image/png&quot; hash=&quot;d1065ae084b108782c68bf50c78b911c&quot; /&gt;</content><author><name></name></author><category term="javascript" /><category term="image processing" /><summary type="html">Image processing</summary></entry><entry><title type="html">mruby</title><link href="http://kozminski.co/javascsript/2015/02/11/mruby.html" rel="alternate" type="text/html" title="mruby" /><published>2015-02-11T00:00:00-06:00</published><updated>2015-02-11T00:00:00-06:00</updated><id>http://kozminski.co/javascsript/2015/02/11/mruby</id><content type="html" xml:base="http://kozminski.co/javascsript/2015/02/11/mruby.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
+&lt;p&gt;Link to presentation: &lt;a href=&quot;http://slides.com/michalkozminski/mruby&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="ruby" /><category term="mruby" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Grunt vs Gulp</title><link href="http://kozminski.co/javascsript/2014/12/20/grunt.html" rel="alternate" type="text/html" title="Grunt vs Gulp" /><published>2014-12-20T00:00:00-06:00</published><updated>2014-12-20T00:00:00-06:00</updated><id>http://kozminski.co/javascsript/2014/12/20/grunt</id><content type="html" xml:base="http://kozminski.co/javascsript/2014/12/20/grunt.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
+&lt;p&gt;Link to presentation: &lt;a href=&quot;/grunt_gulp&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="grunt" /><category term="gulp" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Marionette.js</title><link href="http://kozminski.co/javascsript/2014/11/04/marionette-js.html" rel="alternate" type="text/html" title="Marionette.js" /><published>2014-11-04T00:00:00-06:00</published><updated>2014-11-04T00:00:00-06:00</updated><id>http://kozminski.co/javascsript/2014/11/04/marionette-js</id><content type="html" xml:base="http://kozminski.co/javascsript/2014/11/04/marionette-js.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
+&lt;p&gt;Link to presentation: &lt;a href=&quot;/marionette/assets/player/KeynoteDHTMLPlayer.html&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="backbone.js" /><category term="marionette.js" /><summary type="html">Presentation Link to presentation: link</summary></entry><entry><title type="html">Asm.js</title><link href="http://kozminski.co/javascsript/2014/10/08/asm-js.html" rel="alternate" type="text/html" title="Asm.js" /><published>2014-10-08T00:00:00-05:00</published><updated>2014-10-08T00:00:00-05:00</updated><id>http://kozminski.co/javascsript/2014/10/08/asm-js</id><content type="html" xml:base="http://kozminski.co/javascsript/2014/10/08/asm-js.html">&lt;h1 id=&quot;presentation&quot;&gt;Presentation&lt;/h1&gt;
 &lt;p&gt;Link to presentation: &lt;a href=&quot;/asmjs/assets/player/KeynoteDHTMLPlayer.html&quot;&gt;link&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="javascript" /><category term="asm.js" /><summary type="html">Presentation Link to presentation: link</summary></entry></feed>
